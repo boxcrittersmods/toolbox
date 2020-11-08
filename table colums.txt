@@ -1,0 +1,14 @@
+Room Layer properties
+- visible
+- sprite sheet url
+- frame number
+- Transformation:
+-- pos(x,y)
+-- origin (x,y)
+-- size(width,height)
+
+
+
+Frame
+-- pos in spritesheet (x,y)
+-- crop size (width,height)
