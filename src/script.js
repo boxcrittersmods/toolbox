@@ -26,7 +26,8 @@
 		canvas = document.querySelector("canvas"),
 		audio = document.querySelector("audio"),
 		context = canvas.getContext("2d");
-	canvas.style.width = "100%";
+	// canvas.style.width = "100%";
+	canvas.style.height = "100%";
 
 	async function drawLayer({ visible, src, posX = 0, posY = 0, originX = 0, originY = 0, frameX = 0, frameY = 0, frameRegX = 0, frameRegY = 0, frameW = 0, frameH = 0, alpha = 1 }) {
 

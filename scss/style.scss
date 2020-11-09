@@ -1,3 +1,16 @@
+canvas {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 64px;
+	z-index: 3;
+	left: 0;
+}
+
+canvas:hover {
+	width: 70% !important;
+	left: null;
+}
+
 table {
 	flex: 1;
 	max-width: 100%;
