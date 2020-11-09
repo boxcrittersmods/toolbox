@@ -3,7 +3,6 @@ table {
 	max-width: 100%;
 	tbody > * {
 		padding: 1em;
-		background-color: var(--yellow);
 		height: 2.5em;
 		* {
 			height: 2em;
@@ -12,7 +11,7 @@ table {
 	}
 	tr {
 		padding: 0.5em;
-		background-color: var(--yellow);
+		background-color: var(--green);
 	}
 	th {
 		&:first-child {

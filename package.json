@@ -2,14 +2,18 @@
 	"name": "toolbox",
 	"version": "1.0.0",
 	"scripts": {
-		"sass": "sass scss/style.scss css/style.css",
+		"css": "sass scss/style.scss css/style.css",
 		"js": "terser src/script.js --compress --mangle --output js/script.min.js  --source-map \"root='..',url='script.min.js.map'\""
 	},
 	"repository": "git@github.com:boxcrittersmods/toolbox.git",
 	"author": "Name <tumblegamer@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
+		"html5sortable": "^0.9.18",
 		"sass": "^1.29.0",
 		"terser": "^5.3.8"
+	},
+	"engines": {
+		"yarn": ">= 1.0.0"
 	}
 }
