@@ -1,0 +1,44 @@
+table {
+  flex: 1;
+  max-width: 100%;
+}
+table tbody > * {
+  padding: 1em;
+  background-color: var(--yellow);
+  height: 2.5em;
+}
+table tbody > * * {
+  height: 2em;
+  width: 2em;
+}
+table tr {
+  padding: 0.5em;
+  background-color: var(--yellow);
+}
+table th:first-child {
+  border-left: none;
+}
+
+.sortable-placeholder {
+  height: 1em;
+  border: 1px dashed #000000;
+}
+
+.drag-widget {
+  padding: 0.5em;
+  height: 0.8em;
+  width: 1.8em;
+}
+
+input {
+  width: 10em;
+  min-width: 100%;
+}
+input[type=number] {
+  width: 2em;
+}
+input[type=checkbox] {
+  width: 2em;
+}
+
+/*# sourceMappingURL=style.css.map */
