@@ -1,13 +1,23 @@
-canvas {
-  position: -webkit-sticky;
+#preview {
   position: sticky;
   top: 64px;
   z-index: 2;
-  left: 0;
 }
-
-canvas:hover {
-  width: 70% !important;
+#preview canvas {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+#preview.fullscreen {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  overflow: scroll;
+}
+#preview.fullscreen canvas {
+  width: auto;
 }
 
 table {
@@ -35,10 +45,10 @@ table th:first-child {
   border: 1px dashed #000000;
 }
 
-.drag-widget {
+td.drag-widget {
   padding: 0.5em;
   height: 0.8em;
-  width: 1.8em;
+  width: 1em;
 }
 
 input {
