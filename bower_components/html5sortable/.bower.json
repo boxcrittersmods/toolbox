@@ -1,0 +1,15 @@
+{
+  "name": "html5sortable",
+  "homepage": "https://github.com/lukasoppermann/html5sortable",
+  "version": "0.9.18",
+  "_release": "0.9.18",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.18",
+    "commit": "84cef78b45fc846b8386378806458e727028608e"
+  },
+  "_source": "https://github.com/lukasoppermann/html5sortable.git",
+  "_target": "^0.9.18",
+  "_originalSource": "https://github.com/lukasoppermann/html5sortable.git",
+  "_direct": true
+}

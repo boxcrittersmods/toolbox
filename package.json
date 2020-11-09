@@ -9,7 +9,6 @@
 	"author": "Name <tumblegamer@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"html5sortable": "^0.9.18",
 		"sass": "^1.29.0",
 		"terser": "^5.3.8"
 	}
