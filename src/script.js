@@ -21,22 +21,15 @@
 		});
 	}
 
-	async function loadImages(list) {
-		let images = {};
-		for (let src of list) {
-			images[src] = await loadImage(src);
-		}
-		return images;
-	}
-
 
 	let table = document.querySelector("tbody"),
 		canvas = document.querySelector("canvas#roomPreviewCanvas"),
+		layerPreviewCanvas = document.querySelector("canvas#layerPreview"),
 		audio = document.querySelector("audio"),
 		animateButton = document.querySelector("#playAnimation"),
 		tickButton = document.querySelector("#tickAnimation"),
-		context = canvas.getContext("2d");
-	//canvas.style.height = "100%";
+		context = canvas.getContext("2d"),
+		layerPreviewContext = layerPreviewCanvas.getContext("2d");
 
 	canvas.images = {};
 	canvas.fps = 60;
@@ -64,8 +57,23 @@
 	}
 
 	async function drawLayerPreview({ src, frameX = 0, frameY = 0, frameRegX = 0, frameRegY = 0, frameW = 0, frameH = 0 }) {
+		let width = frameW,
+			height = frameH,
+			ratio = width / height,
+			maxH = 400, maxW = 400;
+		if (height > maxH) {
+			width = maxH * ratio;
+			height = maxH;
+		}
+		if (width > maxW) {
+			height = maxW / ratio;
+			width = maxW;
+		}
+		layerPreviewCanvas.height = height;
+		layerPreviewCanvas.width = width;
 		let image = canvas.images[src];
 		if (!image) image = canvas.images[src] = await loadImage(src);
+		layerPreviewContext.drawImage(image, frameX - frameRegX, frameY - frameRegY, frameW, frameH, 0, 0, width, height);
 	}
 
 	function updateFrameInfo(layer) {
@@ -105,6 +113,7 @@
 
 	async function refreshCanvas() {
 		for (let layer of canvas.layers) {
+			if (layer.previewing) await drawLayerPreview(layer);
 			await drawLayer(layer);
 		}
 	}
@@ -195,6 +204,35 @@
 			createCell(row, "frameRegY", frameRegY, "number").layer = layer;
 			createCell(row, "frameW", frameW, "number").layer = layer;
 			createCell(row, "frameH", frameH, "number").layer = layer;
+
+			(() => {
+
+				row.addEventListener("mouseenter", e => {
+					drawLayerPreview(layer);
+					row.layer.previewing = true;
+					layerPreviewCanvas.classList.remove("hide");
+				});
+
+				row.addEventListener("mousemove", e => {
+
+					let width = -parseFloat(window.getComputedStyle(layerPreviewCanvas).width) * 0,
+						height = -parseFloat(window.getComputedStyle(layerPreviewCanvas).height) / 2;
+					//console.log(layer.src, "hmm");
+					//row.style.left = e.clientX + x + 'px';
+					//row.style.top = e.clientY + y + 'px';
+					layerPreviewCanvas.style.left = e.pageX + width + "px";
+					layerPreviewCanvas.style.top = e.pageY + height + "px";
+				});
+				row.addEventListener("mouseleave", e => {
+					layerPreviewCanvas.classList.add("hide");
+					row.layer.previewing = false;
+				});
+
+			})();
+
+			function mouseNove(e) {
+				console.log("hmm");
+			}
 
 
 			return row;

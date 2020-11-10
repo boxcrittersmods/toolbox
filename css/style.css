@@ -34,6 +34,13 @@
   width: auto;
 }
 
+#layerPreview {
+  position: absolute;
+  width: fit-content;
+  z-index: 3;
+  pointer-events: none;
+}
+
 table {
   flex: 1;
   max-width: 100%;
