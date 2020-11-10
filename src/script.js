@@ -154,6 +154,7 @@
 			input.disabled = void 0 == value || value == "canvas";
 			input.id = input.name = name;
 			input.type = type;
+			input.layer = row.layer;
 			if (type == "checkbox") {
 				input.checked = typeof value == "boolean" ? value : true;
 			} else {
@@ -162,7 +163,10 @@
 
 			Object.defineProperty(row.layer, name, {
 				get() {
-					return input.type == "checkbox" ? input.checked : input.value;
+					if (input.type == "checkbox") {
+						return input.checked;
+					}
+					return input.value;
 				},
 				set(value) {
 					if (input.type == "checkbox") {
@@ -182,6 +186,23 @@
 				refreshCanvas();
 			};
 
+			if (type == "number") {
+				input.lowestScrollDelta = 1e999;
+				input.addEventListener("mouseenter", e => {
+					document.body.classList.add("scroll-disable");
+				});
+				input.addEventListener("mouseleave", e => {
+					document.body.classList.remove("scroll-disable");
+				});
+				input.addEventListener("mousewheel", e => {
+					let val = parseFloat(input.layer[name]);
+					if (input.lowestScrollDelta > e.wheelDelta) input.lowestScrollDelta = e.wheelDelta;
+					console.log(e.wheelDelta, e.wheelDeltaX, e.wheelDeltaY);
+					if (!input.disabled) input.layer[name] = val + e.wheelDelta / input.lowestScrollDelta * 4;
+					refreshCanvas();
+				});
+			}
+
 			return input;
 		}
 
@@ -191,19 +212,19 @@
 			row.layer = layer;
 			if (immoveable) row.classList.add("immoveable");
 			createMoveWidget(row, immoveable);
-			createCell(row, "visible", visible, "checkbox").layer = layer;
-			createCell(row, "src", src, "url").layer = layer;
-			createCell(row, "posX", posX, "number").layer = layer;
-			createCell(row, "posY", posY, "number").layer = layer;
-			createCell(row, "originX", originX, "number").layer = layer;
-			createCell(row, "originY", originY, "number").layer = layer;
-			createCell(row, "frameNo", frameNo, "number").layer = layer;
-			createCell(row, "frameX", frameX, "number").layer = layer;
-			createCell(row, "frameY", frameY, "number").layer = layer;
-			createCell(row, "frameRegX", frameRegX, "number").layer = layer;
-			createCell(row, "frameRegY", frameRegY, "number").layer = layer;
-			createCell(row, "frameW", frameW, "number").layer = layer;
-			createCell(row, "frameH", frameH, "number").layer = layer;
+			createCell(row, "visible", visible, "checkbox");
+			createCell(row, "src", src, "url");
+			createCell(row, "posX", posX, "number");
+			createCell(row, "posY", posY, "number");
+			createCell(row, "originX", originX, "number");
+			createCell(row, "originY", originY, "number");
+			createCell(row, "frameNo", frameNo, "number");
+			createCell(row, "frameX", frameX, "number");
+			createCell(row, "frameY", frameY, "number");
+			createCell(row, "frameRegX", frameRegX, "number");
+			createCell(row, "frameRegY", frameRegY, "number");
+			createCell(row, "frameW", frameW, "number");
+			createCell(row, "frameH", frameH, "number");
 
 			(() => {
 
