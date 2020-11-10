@@ -39,40 +39,79 @@
   width: fit-content;
   z-index: 3;
   pointer-events: none;
+  background-color: #00000070;
 }
 
 table {
+  border-radius: 1em;
   text-align: center;
   flex: 1;
   min-width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  row-gap: 0;
+  position: relative;
+}
+table,
+table th {
+  height: 2em;
   background-color: var(--green);
+  border-radius: 1em;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+table th {
+  position: sticky;
+  top: 64px;
+  font-size: x-large;
+  color: white;
 }
 table th:first-child {
   border-left: none;
 }
+table th::before {
+  background-color: inherit;
+  height: 20%;
+  width: 100%;
+  top: 0;
+  position: absolute;
+  content: "";
+  z-index: -2;
+}
 table tbody {
   height: 2.5em;
+  position: relative;
 }
-table tbody tr:hover {
-  background-color: var(--green-dark);
+table tbody tr td,
+table tbody .sortable-placeholder td {
+  padding: 4px;
 }
-table tbody tr td.drag-widget, table tbody tr td:nth-child(2) {
+table tbody tr td.drag-widget, table tbody tr td:nth-child(2),
+table tbody .sortable-placeholder td.drag-widget,
+table tbody .sortable-placeholder td:nth-child(2) {
   width: 40px !important;
   padding: 0.5em;
   height: 0.8em;
 }
-table tbody tr td:nth-child(3) {
+table tbody tr td:nth-child(3),
+table tbody .sortable-placeholder td:nth-child(3) {
   width: 50%;
 }
 @media only screen and (max-width: 900px) {
-  table tbody tr td:nth-child(3) {
+  table tbody tr td:nth-child(3),
+table tbody .sortable-placeholder td:nth-child(3) {
     width: 100%;
   }
 }
-table tbody tr td * {
+table tbody tr td *,
+table tbody .sortable-placeholder td * {
   min-width: 2em;
   width: 100%;
   height: 2em;
+}
+table tbody tr:hover,
+table .hover {
+  background-color: #00000030;
 }
 
 ::-webkit-scrollbar {
@@ -82,8 +121,10 @@ table tbody tr td * {
 }
 
 .sortable-placeholder {
-  height: 1em;
-  border: 1px dashed #000000;
+  height: 52px;
+  border: 1px dashed #00000030;
+  border-radius: 3px;
+  border-width: 0.3em;
 }
 
 input {

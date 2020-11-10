@@ -49,14 +49,15 @@
 				<a href="#" id="tickAnimation" class="btn bg-primary">
 					Tick</a>
 			</div>
-			<p><strong>Tip:</strong> Click canvas to toggle fullscreen</p> <canvas id="layerPreview"></canvas>
+			<p><strong>Tip:</strong> Click canvas to toggle fullscreen</p>
+			<canvas id="layerPreview" class="hide"></canvas>
 		</div>
 		<div class="row">
 			<div id="roomPreview" class="col-1-3 toggler" data-toggle-self="fullscreen"
 				data-toggle-body="scroll-disable">
 				<canvas id="roomPreviewCanvas"></canvas>
 			</div>
-			<table class="col-2-3">
+			<table class="col-2-3" cellspacing="0">
 				<thead>
 					<tr>
 						<th rowspan="2"></th>
@@ -67,7 +68,7 @@
 						<th colspan="5" class="hide-mobile">Frame</th>
 						<th colspan="2" class="hide-mobile">Size</th>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<th class="hide-mobile">X</th>
 						<th class="hide-mobile">Y</th>
 						<th class="hide-mobile">X</th>
@@ -79,7 +80,7 @@
 						<th class="hide-mobile">regY</th>
 						<th class="hide-mobile">W</th>
 						<th class="hide-mobile">H</th>
-					</tr>
+					</tr> -->
 				</thead>
 				<tbody id="layers">
 					<tr>
