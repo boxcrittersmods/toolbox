@@ -42,23 +42,43 @@
 }
 
 table {
+  text-align: center;
   flex: 1;
-  max-width: 100%;
-}
-table tbody > * {
-  padding: 1em;
-  height: 2.5em;
-}
-table tbody > * * {
-  height: 2em;
-  width: 2em;
-}
-table tr {
-  padding: 0.5em;
+  min-width: 100%;
   background-color: var(--green);
 }
 table th:first-child {
   border-left: none;
+}
+table tbody {
+  height: 2.5em;
+}
+table tbody tr:hover {
+  background-color: var(--green-dark);
+}
+table tbody tr td.drag-widget, table tbody tr td:nth-child(2) {
+  width: 40px !important;
+  padding: 0.5em;
+  height: 0.8em;
+}
+table tbody tr td:nth-child(3) {
+  width: 50%;
+}
+@media only screen and (max-width: 900px) {
+  table tbody tr td:nth-child(3) {
+    width: 100%;
+  }
+}
+table tbody tr td * {
+  min-width: 2em;
+  width: 100%;
+  height: 2em;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+  /* make scrollbar transparent */
 }
 
 .sortable-placeholder {
@@ -66,21 +86,23 @@ table th:first-child {
   border: 1px dashed #000000;
 }
 
-td.drag-widget {
-  padding: 0.5em;
-  height: 0.8em;
-  width: 1em;
-}
-
 input {
-  width: 10em;
-  min-width: 100%;
+  text-align: center;
+  border-radius: 5px;
+  border-style: none;
+  padding: 3px;
 }
 input[type=number] {
-  width: 2em;
+  -moz-appearance: textfield;
 }
-input[type=checkbox] {
-  width: 2em;
+input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number]:hover {
+  border-width: 5px;
+  border-color: var(--red);
+  border-style: solid;
 }
 
 /*# sourceMappingURL=style.css.map */

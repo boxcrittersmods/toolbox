@@ -154,7 +154,8 @@
 
 		function createCell(row, name, value, type) {
 			let input = document.createElement('input');
-			row.insertCell().appendChild(input);
+			let cell = row.insertCell();
+			cell.appendChild(input);
 			input.disabled = void 0 == value || value == "canvas";
 			input.id = input.name = name;
 			input.type = type;
@@ -191,6 +192,7 @@
 			};
 
 			if (type == "number") {
+				cell.classList.add("hide-mobile");
 				input.lowestScrollDelta = 1e999;
 				input.addEventListener("mouseenter", e => {
 					document.body.classList.add("scroll-disable");
