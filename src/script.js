@@ -21,12 +21,30 @@
 		});
 	}
 
+	async function loadImages(list) {
+		let images = {};
+		for (let src of list) {
+			images[src] = await loadImage(src);
+		}
+		return images;
+	}
+
 
 	let table = document.querySelector("tbody"),
-		canvas = document.querySelector("canvas"),
+		canvas = document.querySelector("canvas#roomPreviewCanvas"),
 		audio = document.querySelector("audio"),
+		animateButton = document.querySelector("#playAnimation"),
+		tickButton = document.querySelector("#tickAnimation"),
 		context = canvas.getContext("2d");
 	//canvas.style.height = "100%";
+
+	canvas.images = {};
+	canvas.fps = 60;
+	Object.defineProperty(canvas, "animating", {
+		get() {
+			return animateButton.classList.contains("enabled");
+		}
+	});
 
 	async function drawLayer({ visible, src, posX = 0, posY = 0, originX = 0, originY = 0, frameX = 0, frameY = 0, frameRegX = 0, frameRegY = 0, frameW = 0, frameH = 0, alpha = 1 }) {
 
@@ -38,15 +56,52 @@
 			return;
 		};
 
-		let image = await loadImage(src);
+		let image = canvas.images[src];
+		if (!image) image = canvas.images[src] = await loadImage(src);
 		context.globalAlpha = alpha;
 		context.drawImage(image, frameX - frameRegX, frameY - frameRegY, frameW, frameH, posX - originX, posY - originY, frameW, frameH);
 
 	}
 
+	async function drawLayerPreview({ src, frameX = 0, frameY = 0, frameRegX = 0, frameRegY = 0, frameW = 0, frameH = 0 }) {
+		let image = canvas.images[src];
+		if (!image) image = canvas.images[src] = await loadImage(src);
+	}
+
 	function updateFrameInfo(layer) {
+		layer.frameNo %= layer.frames.length;
+		let frame = layer.frames[layer.frameNo];
+		Object.assign(layer, {
+			src: layer.images[frame[4]],
+			frameX: frame[0],
+			frameY: frame[1],
+			frameRegX: frame[5],
+			frameRegY: frame[6],
+			frameW: frame[2],
+			frameH: frame[3],
+		});
 
 	}
+	function tickAnimation() {
+		if (!canvas.layers) return;
+		for (let layer of canvas.layers) {
+			if (!layer.frameNo) continue;
+			layer.frameNo++;
+			updateFrameInfo(layer);
+		}
+		refreshCanvas();
+	}
+
+	function tick() {
+		setTimeout(function () {
+			requestAnimationFrame(tick);
+			if (!canvas.animating) return;
+			tickAnimation();
+		}, 1000 / canvas.fps);
+	}
+	requestAnimationFrame(tick);
+
+	tickButton.addEventListener("click", tickAnimation);
 
 	async function refreshCanvas() {
 		for (let layer of canvas.layers) {
@@ -84,21 +139,37 @@
 
 		}
 
-		function createCell(row, name, defaultValue, type) {
+		function createCell(row, name, value, type) {
 			let input = document.createElement('input');
 			row.insertCell().appendChild(input);
-			input.disabled = void 0 == defaultValue || defaultValue == "canvas";
+			input.disabled = void 0 == value || value == "canvas";
 			input.id = input.name = name;
 			input.type = type;
 			if (type == "checkbox") {
-				input.checked = typeof defaultValue == "boolean" ? defaultValue : true;
+				input.checked = typeof value == "boolean" ? value : true;
 			} else {
-				input.value = defaultValue;
+				input.value = value;
 			}
+
+			Object.defineProperty(row.layer, name, {
+				get() {
+					return input.type == "checkbox" ? input.checked : input.value;
+				},
+				set(value) {
+					if (input.type == "checkbox") {
+						input.checked = typeof value == "boolean" ? value : true;
+					} else {
+						input.value = value;
+					}
+				}
+			});
 
 			input.onchange = function () {
 				this.layer[this.id] = this.type == "checkbox" ? this.checked : this.value;
 				console.log(this.id, this.layer);
+				if (this.id == "frameNo") {
+					updateFrameInfo(this.layer);
+				}
 				refreshCanvas();
 			};
 
@@ -108,6 +179,7 @@
 		function createRow(layer) {
 			let { immoveable, visible, src, posX, posY, originX, originY, frameNo, frameX, frameY, frameRegX, frameRegY, frameW, frameH } = layer;
 			let row = table.insertRow();
+			row.layer = layer;
 			if (immoveable) row.classList.add("immoveable");
 			createMoveWidget(row, immoveable);
 			createCell(row, "visible", visible, "checkbox").layer = layer;
@@ -123,6 +195,9 @@
 			createCell(row, "frameRegY", frameRegY, "number").layer = layer;
 			createCell(row, "frameW", frameW, "number").layer = layer;
 			createCell(row, "frameH", frameH, "number").layer = layer;
+
+
+			return row;
 		}
 
 		for (let layer of canvas.layers) {
@@ -132,6 +207,7 @@
 		sortable("#layers", {
 			items: ':not(.immoveable)'
 		})[0].addEventListener('sortstop', function (e) {
+			canvas.layers = [].map.call(table.rows, row => row.layer);
 			refreshCanvas();
 		});;
 	}
@@ -169,17 +245,18 @@
 		let spriteSheet = room.spriteSheet = typeof room.spriteSheet == "string" ? await getJSON(room.spriteSheet) : room.spriteSheet,
 			layout = room.layout;
 
-		canvas.layers.push({
-			immoveable: true,
-			visible: true,
-			src: room.media.background,
-			posX: 0,
-			posY: 0,
-			originX: 0,
-			originY: 0,
-			frameW: room.width,
-			frameH: room.height,
-		});
+		if (room.media.background)
+			canvas.layers.push({
+				//immoveable: true,
+				visible: true,
+				src: room.media.background,
+				posX: 0,
+				posY: 0,
+				originX: 0,
+				originY: 0,
+				frameW: room.width,
+				frameH: room.height,
+			});
 
 		/*if (spriteSheet.images) spriteSheet.images = await Promise.all(spriteSheet.images.map(async url => typeof url == "string" ? await loadImage(url) : url));*/
 
@@ -207,70 +284,63 @@
 					continue;
 				}
 
-				let frames = animation.frames.map(f => spriteSheet.frames[f]);
-				let frame = frames[0];
-
-				canvas.layers.push({
-					frames,
+				let layer = {
+					images: spriteSheet.images,
+					frames: animation.frames.map(f => spriteSheet.frames[f]),
 					visible: true,
-					src: spriteSheet.images[frame[4]],
 					posX: placement.x,
 					posY: placement.y,
 					originX: placement.regX,
 					originY: placement.regY,
 					frameNo: 0,
-					frameX: frame[0],
-					frameY: frame[1],
-					frameRegX: frame[5],
-					frameRegY: frame[6],
-					frameW: frame[2],
-					frameH: frame[3],
-				});
+				};
+				updateFrameInfo(layer);
+				canvas.layers.push(layer);
 			}
 		}
 
 
 
+		if (room.media.foreground)
+			canvas.layers.push({
+				//immoveable: true,
+				visible: true,
+				src: room.media.foreground,
+				posX: 0,
+				posY: 0,
+				originX: 0,
+				originY: 0,
+				frameW: room.width,
+				frameH: room.height,
+			});
 
-		canvas.layers.push({
-			immoveable: true,
-			visible: true,
-			src: room.media.foreground,
-			posX: 0,
-			posY: 0,
-			originX: 0,
-			originY: 0,
-			frameW: room.width,
-			frameH: room.height,
-		});
+		if (room.media.navMesh)
+			canvas.layers.push({
+				//immoveable: true,
+				visible: false,
+				src: room.media.navMesh,
+				posX: 0,
+				posY: 0,
+				originX: 0,
+				originY: 0,
+				frameW: room.width,
+				frameH: room.height,
+				alpha: .5
+			});
 
-
-		canvas.layers.push({
-			immoveable: true,
-			visible: false,
-			src: room.media.navMesh,
-			posX: 0,
-			posY: 0,
-			originX: 0,
-			originY: 0,
-			frameW: room.width,
-			frameH: room.height,
-			alpha: .5
-		});
-
-
-		canvas.layers.push({
-			immoveable: true,
-			visible: false,
-			src: room.media.treasure,
-			posX: 0,
-			posY: 0,
-			originX: 0,
-			originY: 0,
-			frameW: room.width,
-			frameH: room.height,
-			alpha: .5
-		});
+		if (room.media.treasure)
+			canvas.layers.push({
+				//immoveable: true,
+				visible: false,
+				src: room.media.treasure,
+				posX: 0,
+				posY: 0,
+				originX: 0,
+				originY: 0,
+				frameW: room.width,
+				frameH: room.height,
+				alpha: .5
+			});
 
 		initTable();
 		refreshCanvas();
