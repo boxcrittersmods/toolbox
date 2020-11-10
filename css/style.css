@@ -1,3 +1,7 @@
+html {
+  overflow-x: hidden;
+}
+
 #roomPreview {
   position: sticky;
   top: 64px;
@@ -71,7 +75,7 @@ table th:first-child {
 }
 table th::before {
   background-color: inherit;
-  height: 20%;
+  height: 50%;
   width: 100%;
   top: 0;
   position: absolute;
