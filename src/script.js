@@ -14,6 +14,10 @@
 	function loadImage(url) {
 		let img = new Image();
 		return new Promise((resolve, reject) => {
+			if (url == "canvas") {
+				resolve(canvas);
+				return;
+			}
 			img.onload = () => {
 				resolve(img);
 			};
@@ -236,8 +240,8 @@
 
 				row.addEventListener("mousemove", e => {
 
-					let width = -parseFloat(window.getComputedStyle(layerPreviewCanvas).width) * 0,
-						height = -parseFloat(window.getComputedStyle(layerPreviewCanvas).height) / 2;
+					let width = -parseFloat(window.getComputedStyle(layerPreviewCanvas).width) * 0 + 20,
+						height = -parseFloat(window.getComputedStyle(layerPreviewCanvas).height) * 3 / 4;
 					//console.log(layer.src, "hmm");
 					//row.style.left = e.clientX + x + 'px';
 					//row.style.top = e.clientY + y + 'px';
