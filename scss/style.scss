@@ -2,6 +2,10 @@ html {
 	overflow-x: hidden;
 }
 
+.page-row {
+	flex-wrap: nowrap;
+}
+
 #roomPreview {
 	position: sticky;
 	top: 64px;
