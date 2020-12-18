@@ -56,7 +56,7 @@
 		let image = canvas.images[src];
 		if (!image) image = canvas.images[src] = await loadImage(src);
 		context.globalAlpha = alpha;
-		context.drawImage(image, frameX - frameRegX, frameY - frameRegY, frameW, frameH, posX - originX, posY - originY, frameW, frameH);
+		context.drawImage(image, frameX, frameY, frameW, frameH, posX - originX - frameRegX, posY - originY - frameRegY, frameW, frameH);
 
 	}
 
@@ -77,7 +77,7 @@
 		layerPreviewCanvas.width = width;
 		let image = canvas.images[src];
 		if (!image) image = canvas.images[src] = await loadImage(src);
-		layerPreviewContext.drawImage(image, frameX - frameRegX, frameY - frameRegY, frameW, frameH, 0, 0, width, height);
+		layerPreviewContext.drawImage(image, frameX, frameY, frameW, frameH, 0, 0, width, height);
 	}
 
 	function updateFrameInfo(layer) {
