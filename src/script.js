@@ -7,7 +7,7 @@
 	}
 
 	async function getManifest(type) {
-		let m = await getJSON("https://api.boxcrittersmods.ga/manifests");
+		let m = await getJSON("https://api.bcmc.ga/manifests");
 		return await getJSON(m[type].src);
 	}
 
