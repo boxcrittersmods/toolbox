@@ -12,7 +12,7 @@
 	}
 
 	function loadImage(url) {
-		let img = new Image();
+		let img = url.endsWith(".mp4") ? new Video() : new Image();
 		return new Promise((resolve, reject) => {
 			if (url == "canvas") {
 				resolve(canvas);
@@ -20,6 +20,7 @@
 			}
 			img.onload = () => {
 				resolve(img);
+				if (img.src.endsWith(".mp4")) img.play();
 			};
 			img.src = url;
 		});
@@ -315,6 +316,19 @@
 				//immoveable: true,
 				visible: true,
 				src: room.media.background,
+				posX: 0,
+				posY: 0,
+				originX: 0,
+				originY: 0,
+				frameW: room.width,
+				frameH: room.height,
+			});
+		
+		if (room.media.video)
+			canvas.layers.push({
+				//immoveable: true,
+				visible: true,
+				src: room.media.video,
 				posX: 0,
 				posY: 0,
 				originX: 0,
