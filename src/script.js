@@ -12,7 +12,7 @@
 	}
 
 	function loadImage(url) {
-		let img = url.endsWith(".mp4") ? new Video() : new Image();
+		let img = url.endsWith(".mp4") ? document.createElement("video") : new Image();
 		return new Promise((resolve, reject) => {
 			if (url == "canvas") {
 				resolve(canvas);
